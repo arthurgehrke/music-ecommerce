@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    container_name: 'music-store-api'
+    build: .
+    restart: always
+    depends_on:
+      - db
+    command: bash infra/start.sh
+    ports: 
+      - 3000:3000
+    environment:
+      - DB_PASSWORD=postgres
+    volumes: 
+      - .:/usr/app/music-ecommerce
+    env_file: 
+      - .env
+
+  db:
+    container_name: 'postgres-db'
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - $PWD/data:/var/lib/postgresql/data
